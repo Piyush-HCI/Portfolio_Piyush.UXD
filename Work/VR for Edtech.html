@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VR for Education | Mixed-Methods UX Research</title>
+    <meta name="description" content="MSc Dissertation: A rigorous mixed-methods study comparing Social Presence and Engagement in VR (FrameVR) vs. 2D Platforms (Microsoft Teams).">
+
+    <!-- Google Fonts: Space Grotesk -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Material Symbols -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        gray: {
+                            900: '#111827', 800: '#1F2937', 700: '#374151', 400: '#9CA3AF', 100: '#F3F4F6',
+                        },
+                        violet: {
+                            500: '#8B5CF6', 600: '#7C3AED', 900: '#4C1D95', 400: '#A78BFA',
+                        },
+                        indigo: {
+                            500: '#6366F1', 900: '#312E81',
+                        }
+                    },
+                    boxShadow: {
+                        'glow-violet': '0 0 25px -5px rgba(139, 92, 246, 0.5)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Styles from Design System */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #1F2937; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #4B5563; border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #6B7280; }
+        
+        .nav-link.active { background-color: #374151; color: white; }
+
+        .glass-card {
+            background: rgba(31, 41, 55, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(55, 65, 81, 1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Hero Image Overlay Gradient */
+        .hero-gradient {
+            background: linear-gradient(to bottom, rgba(17, 24, 39, 0.3) 0%, rgba(17, 24, 39, 1) 100%);
+        }
+
+        /* Sticky TOC Active State (Violet Theme) */
+        .toc-link.active { color: #A78BFA; border-left-color: #A78BFA; font-weight: 700; }
+        
+        /* Smooth Fade In */
+        .fade-in-up { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+        .fade-in-up.visible { opacity: 1; transform: translateY(0); }
+        
+        /* Image Caption */
+        .img-caption { font-size: 0.75rem; color: #9CA3AF; text-align: center; margin-top: 0.5rem; font-style: italic; }
+
+        /* Collapsible Styles */
+        .collapsible-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; }
+        .collapsible-content.open { max-height: 600px; }
+        
+        /* Data Bar Animation */
+        .data-bar { transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1); }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-400 font-sans antialiased">
+
+    <!-- ============================================
+         TOP NAVIGATION BAR
+    ============================================= -->
+    <nav class="fixed top-0 left-0 w-full z-50 bg-gray-900/80 backdrop-blur-md border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 h-16 relative flex items-center justify-center">
+            
+            <!-- Desktop Menu (Centered) -->
+            <ul class="hidden md:flex items-center gap-1 list-none p-0 m-0">
+                <li><a href="index.html" class="nav-link px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-800 hover:text-white transition-all duration-200">Home</a></li>
+                <li><a href="about.html" class="nav-link px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-800 hover:text-white transition-all duration-200">About Me</a></li>
+                <li><a href="/resume.pdf" target="_blank" class="nav-link px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-800 hover:text-white transition-all duration-200">Resume</a></li>
+
+                <!-- My Work Dropdown -->
+                <li class="relative group">
+                    <button class="nav-link active px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-800 hover:text-white transition-all duration-200 flex items-center gap-1">
+                        My Work
+                        <svg class="w-3 h-3 text-gray-500 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-64 bg-gray-800 rounded-2xl border border-gray-700 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top p-2">
+                        <!-- Active Link Style -->
+                        <a href="/project-vr" class="block px-4 py-3 rounded-xl bg-gray-700 text-white text-sm transition-colors">
+                            <span class="block font-bold">VR for Education</span>
+                            <span class="text-xs text-gray-400">Immersive Research</span>
+                        </a>
+                        <a href="/project-flood" class="block px-4 py-3 rounded-xl hover:bg-gray-700 text-sm text-gray-300 hover:text-white transition-colors">
+                            <span class="block font-bold">Immersive Flood Readiness</span>
+                            <span class="text-xs text-gray-500">Social Impact VR</span>
+                        </a>
+                        <a href="/project-career" class="block px-4 py-3 rounded-xl hover:bg-gray-700 text-sm text-gray-300 hover:text-white transition-colors">
+                            <span class="block font-bold">CareerUp App</span>
+                            <span class="text-xs text-gray-500">Service Design</span>
+                        </a>
+                    </div>
+                </li>
+
+                <!-- My Blog Dropdown -->
+                <li class="relative group">
+                    <button class="nav-link px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-800 hover:text-white transition-all duration-200 flex items-center gap-1">
+                        My Blog
+                        <svg class="w-3 h-3 text-gray-500 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-80 bg-gray-800 rounded-2xl border border-gray-700 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top p-2">
+                        <div class="max-h-[60vh] overflow-y-auto custom-scrollbar" id="nav-blog-list"></div>
+                    </div>
+                </li>
+
+                <!-- Connect Dropdown -->
+                <li class="relative group">
+                    <button class="nav-link px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-800 hover:text-white transition-all duration-200 flex items-center gap-1">
+                        Connect
+                        <svg class="w-3 h-3 text-gray-500 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    </button>
+                    <div class="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 bg-gray-800 rounded-2xl border border-gray-700 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top p-2 grid grid-cols-3 gap-1">
+                        <a href="https://linkedin.com/in/piyush-uiux" target="_blank" class="flex items-center justify-center p-3 rounded-xl hover:bg-gray-700 text-gray-400 hover:text-blue-500 transition-colors" title="LinkedIn"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg></a>
+                        <a href="https://medium.com/@piyushap5050" target="_blank" class="flex items-center justify-center p-3 rounded-xl hover:bg-gray-700 text-gray-400 hover:text-white transition-colors" title="Medium"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z"/></svg></a>
+                        <a href="https://instagram.com/piyush.uxd" target="_blank" class="flex items-center justify-center p-3 rounded-xl hover:bg-gray-700 text-gray-400 hover:text-pink-500 transition-colors" title="Instagram"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948-0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg></a>
+                        <a href="mailto:piyush@anoleep.com" class="flex items-center justify-center p-3 rounded-xl hover:bg-gray-700 text-gray-400 hover:text-gray-100 transition-colors" title="Email"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
+                        <a href="https://www.youtube.com/@piyushuxd" target="_blank" class="flex items-center justify-center p-3 rounded-xl hover:bg-gray-700 text-gray-400 hover:text-red-500 transition-colors" title="YouTube"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+                    </div>
+                </li>
+            </ul>
+
+            <!-- Mobile Hamburger Button -->
+            <button class="md:hidden p-2 rounded-full bg-gray-800 text-gray-300 hover:text-white" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-gray-800 border-b border-gray-700 absolute top-16 w-full p-4 flex flex-col gap-2 shadow-2xl">
+            <a href="index.html" class="block px-4 py-3 rounded-xl hover:bg-gray-700 text-gray-300 transition-colors">Home</a>
+            <a href="about.html" class="block px-4 py-3 rounded-xl hover:bg-gray-700 text-gray-300 transition-colors">About Me</a>
+            <a href="resume.html" class="block px-4 py-3 rounded-xl hover:bg-gray-700 text-gray-300 transition-colors">Resume</a>
+            <div class="px-4 py-2 text-xs font-bold text-gray-500 uppercase tracking-widest mt-2">Work</div>
+            <a href="/project-vr" class="block px-4 py-2 rounded-xl hover:bg-gray-700 text-gray-300 transition-colors pl-8">VR for Education</a>
+            <a href="/project-flood" class="block px-4 py-2 rounded-xl hover:bg-gray-700 text-gray-300 transition-colors pl-8">Immersive Flood Readiness</a>
+            <a href="/project-career" class="block px-4 py-2 rounded-xl hover:bg-gray-700 text-gray-300 transition-colors pl-8">CareerUp App</a>
+            <div class="px-4 py-2 text-xs font-bold text-gray-500 uppercase tracking-widest mt-2">Blog</div>
+            <a href="index.html#blog-section" class="block px-4 py-2 rounded-xl hover:bg-gray-700 text-gray-300 transition-colors pl-8">View All Articles</a>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <header class="relative min-h-[85vh] w-full flex items-center justify-center overflow-hidden pt-20 pb-16">
+        <!-- Background Image -->
+        <div class="absolute inset-0 z-0">
+            <!-- Placeholder for Hero Image -->
+            <img src="vr-hero.jpg" onerror="this.src='https://placehold.co/1920x1080/4C1D95/A78BFA?text=Spatial+Computing+UX+Research'" alt="VR Education Research" class="w-full h-full object-cover opacity-60">
+            <div class="absolute inset-0 hero-gradient"></div>
+        </div>
+
+        <div class="relative z-10 max-w-5xl mx-auto px-4 text-center fade-in-up">
+            <!-- Dissertation Badge -->
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-900/40 border border-violet-500/40 text-violet-300 text-xs font-bold uppercase tracking-widest mb-4 animate-pulse">
+                <span class="material-symbols-rounded text-sm">science</span>
+                MSc UX Research Project (Dissertation)
+            </div>
+            <div class="block"></div>
+            <!-- UN SDG 4 Badge -->
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-900/30 border border-indigo-500/30 text-indigo-300 text-xs font-bold uppercase tracking-widest mb-6">
+                <span class="material-symbols-rounded text-sm">public</span>
+                UN SDG 4: Quality Education
+            </div>
+            <h1 class="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight max-w-4xl mx-auto">
+                Beyond Zoom Fatigue: Validating Spatial UX in EdTech
+            </h1>
+            <p class="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed mb-8">
+                A rigorous, mixed-methods study utilizing SPSS and G*Power to evaluate how immersive 3D environments impact <strong>Social Presence</strong>, <strong>Student Engagement</strong>, and <strong>Cognitive Load</strong> compared to legacy 2D platforms.
+            </p>
+            
+            <!-- Showcase Button -->
+            <a href="https://sdcapgshow2024.lboro.ac.uk/student/piyush-anil-punjwani/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-violet-600 hover:bg-violet-500 text-white font-bold rounded-full transition-all duration-300 shadow-glow-violet transform hover:-translate-y-1 mb-12">
+                View University Showcase Feature <span class="material-symbols-rounded">open_in_new</span>
+            </a>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto text-left">
+                <div class="glass-card p-4 rounded-xl">
+                    <p class="text-xs text-gray-500 uppercase tracking-widest mb-1">Role</p>
+                    <p class="text-sm text-white font-bold">Lead UX Researcher</p>
+                </div>
+                <div class="glass-card p-4 rounded-xl">
+                    <p class="text-xs text-gray-500 uppercase tracking-widest mb-1">Methodology</p>
+                    <p class="text-sm text-white font-bold">Within-Subjects (A/B)</p>
+                </div>
+                <div class="glass-card p-4 rounded-xl">
+                    <p class="text-xs text-gray-500 uppercase tracking-widest mb-1">Tools</p>
+                    <p class="text-sm text-white font-bold">FrameVR, SPSS, G*Power</p>
+                </div>
+                <div class="glass-card p-4 rounded-xl">
+                    <p class="text-xs text-gray-500 uppercase tracking-widest mb-1">Metrics</p>
+                    <p class="text-sm text-white font-bold">NMSS, UES, Task Load</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 md:px-8 py-16 grid grid-cols-1 lg:grid-cols-12 gap-12">
+
+        <!-- STICKY TABLE OF CONTENTS (Left Column) -->
+        <aside class="hidden lg:block lg:col-span-3 relative">
+            <div class="sticky top-32">
+                <h3 class="text-sm font-bold text-white uppercase tracking-widest mb-4">Content</h3>
+                <nav class="flex flex-col gap-2 border-l border-gray-800">
+                    <a href="#overview" class="toc-link pl-4 py-1 text-sm text-gray-400 hover:text-violet-400 border-l-2 border-transparent transition-colors">The Problem & Literature</a>
+                    <a href="#methodology" class="toc-link pl-4 py-1 text-sm text-gray-400 hover:text-violet-400 border-l-2 border-transparent transition-colors">Experiment Design</a>
+                    <a href="#execution" class="toc-link pl-4 py-1 text-sm text-gray-400 hover:text-violet-400 border-l-2 border-transparent transition-colors">Protocol & Execution</a>
+                    <a href="#findings" class="toc-link pl-4 py-1 text-sm text-gray-400 hover:text-violet-400 border-l-2 border-transparent transition-colors">Quantitative Analysis</a>
+                    <a href="#takeaways" class="toc-link pl-4 py-1 text-sm text-gray-400 hover:text-violet-400 border-l-2 border-transparent transition-colors">Actionable UX Insights</a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT (Right Column) -->
+        <div class="col-span-1 lg:col-span-9 space-y-24">
+
+            <!-- SECTION 1: OVERVIEW & LITERATURE -->
+            <section id="overview" class="scroll-section">
+                <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                    <span class="text-violet-500">01.</span> The Literature Gap
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                    <div>
+                        <p class="leading-relaxed mb-4 text-gray-300 font-medium text-lg">
+                            Can a virtual avatar restore the humanity lost in a video call?
+                        </p>
+                        <p class="leading-relaxed mb-4 text-gray-400">
+                            The pandemic established Microsoft Teams and Zoom as educational standards. However, to ensure my research was grounded in actual scientific need, I conducted a systematic narrative review of literature published between 2022 and 2024 via <strong>ScienceDirect</strong>. 
+                        </p>
+                        <p class="leading-relaxed mb-4 text-gray-400">
+                            The review revealed a significant UX gap: legacy 2D platforms fundamentally lack <strong>Social Presence</strong>—the psychological feeling of being "with" another person. My thesis sought to prove whether spatial computing environments (VR) could restore this presence without overburdening the user's cognitive capacity.
+                        </p>
+                        
+                        <!-- Collapsible Research Questions -->
+                        <div class="mt-4">
+                            <button id="vision-toggle" class="text-xs text-violet-400 hover:text-white uppercase tracking-widest font-bold transition-colors flex items-center gap-2">
+                                <span>[View Formal Research Questions]</span>
+                                <span class="material-symbols-rounded text-sm transform transition-transform duration-300" id="vision-icon">expand_more</span>
+                            </button>
+                            <div id="vision-content" class="collapsible-content">
+                                <div class="p-4 mt-2 bg-gray-800/50 border-l-2 border-violet-500 rounded-r-lg text-sm text-gray-300">
+                                    <ul class="list-disc pl-4 space-y-3">
+                                        <li><strong>RQ1:</strong> What are the user needs and requirements regarding the design of classroom layouts in virtual reality settings?</li>
+                                        <li><strong>RQ2:</strong> How does the virtual room layout quantitatively affect Social Presence in the context of education?</li>
+                                        <li><strong>RQ3:</strong> Does a VR environment significantly improve Student Engagement compared to established 2D platforms?</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-800/30 border border-gray-700/50 p-6 rounded-2xl flex flex-col justify-center">
+                        <h3 class="text-gray-200 font-bold mb-3 text-sm uppercase tracking-wide">Academic & Ethical Rigor</h3>
+                        <p class="text-sm text-gray-400 leading-relaxed mb-4">
+                            Praised by the assessment board for its "multi-method process," this project was conducted over multiple rigorous phases (Proposal, Ethics, Testing, SPSS Analysis) under the supervision of Dr. Ruth Welsh.
+                        </p>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3 text-xs text-gray-400 bg-gray-900/50 p-3 rounded-lg border border-gray-700">
+                                <span class="material-symbols-rounded text-sm text-emerald-400">verified</span>
+                                <span><strong>Ethics Approval:</strong> ID 18624 (Loughborough Univ.)</span>
+                            </div>
+                            <div class="flex items-center gap-3 text-xs text-gray-400 bg-gray-900/50 p-3 rounded-lg border border-gray-700">
+                                <span class="material-symbols-rounded text-sm text-blue-400">calculate</span>
+                                <span><strong>Sample Validation:</strong> Target N=20 calculated via G*Power</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: METHODOLOGY (The Science) -->
+            <section id="methodology" class="scroll-section">
+                <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                    <span class="text-violet-500">02.</span> Experiment Design
+                </h2>
+                
+                <p class="leading-relaxed mb-6 text-gray-300 text-lg">
+                    To isolate the impact of the spatial layout and control for individual biases regarding technology, I utilized a <strong>Within-Subjects Design</strong> (N=20). Every participant experienced both the Control and the Variable, allowing for direct, paired statistical comparisons.
+                </p>
+
+                <!-- Variables Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <!-- Independent Variable -->
+                    <div class="glass-card p-6 rounded-xl border-t-4 border-violet-500">
+                        <span class="text-xs text-gray-500 uppercase tracking-widest font-bold">Independent Variable (IV)</span>
+                        <h4 class="text-white font-bold text-xl mb-4">The Interface Medium</h4>
+                        <div class="space-y-4">
+                            <div class="bg-gray-800/50 p-4 rounded-lg border border-gray-700">
+                                <span class="text-sm text-violet-400 font-bold block mb-1">Prototype A (Control)</span>
+                                <p class="text-sm text-gray-300">Microsoft Teams: 2D UI, static video grids, rigid turn-taking via "raise hand" mechanics.</p>
+                            </div>
+                            <div class="bg-gray-800/50 p-4 rounded-lg border border-gray-700">
+                                <span class="text-sm text-violet-400 font-bold block mb-1">Prototype B (Variable)</span>
+                                <p class="text-sm text-gray-300">FrameVR Classroom: 3D Spatial UI, personalized avatars, and proximity-based spatial audio.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dependent Variables -->
+                    <div class="glass-card p-6 rounded-xl border-t-4 border-indigo-500">
+                        <span class="text-xs text-gray-500 uppercase tracking-widest font-bold">Dependent Variables (DV)</span>
+                        <h4 class="text-white font-bold text-xl mb-4">Psychological Metrics</h4>
+                        <ul class="text-sm text-gray-400 space-y-4">
+                            <li class="bg-gray-800/50 p-4 rounded-lg border border-gray-700">
+                                <strong class="text-indigo-300 block mb-1">Social Presence (NMSS)</strong>
+                                Utilized the validated Networked Minds Measure. Subscales evaluated included <em>Perceived Affective Understanding</em> (Cronbach's α = .86) and <em>Emotional Interdependence</em> (Cronbach's α = .85).
+                            </li>
+                            <li class="bg-gray-800/50 p-4 rounded-lg border border-gray-700">
+                                <strong class="text-indigo-300 block mb-1">Student Engagement (UES)</strong>
+                                Tracked deep immersion, focused attention, and temporal dissociation.
+                            </li>
+                            <li class="bg-gray-800/50 p-4 rounded-lg border border-gray-700">
+                                <strong class="text-indigo-300 block mb-1">Cognitive Load</strong>
+                                Captured raw quantitative data via post-task mental effort scoring.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: PROTOCOL & EXECUTION -->
+            <section id="execution" class="scroll-section">
+                <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                    <span class="text-violet-500">03.</span> Protocol & Execution
+                </h2>
+                
+                <p class="mb-8 text-gray-300 text-lg">
+                    Participants weren't just asked for their opinions in a vacuum; they were required to perform specific, collaborative educational tasks in both environments. This mixed-methods approach ensured I could capture behavioral observations alongside the self-reported survey data.
+                </p>
+
+                <!-- Comparison Visuals -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                    <!-- Prototype A: Teams -->
+                    <div class="group">
+                        <div class="h-64 bg-gray-800 rounded-xl overflow-hidden border border-gray-700 relative mb-4">
+                            <img src="vr-teams-ui.jpg" onerror="this.src='https://placehold.co/800x600/1F2937/A78BFA?text=Control:+Microsoft+Teams'" class="w-full h-full object-cover" alt="Microsoft Teams Interface">
+                            <div class="absolute top-3 left-3 bg-gray-900/90 text-white text-xs px-3 py-1.5 rounded-md border border-gray-600 font-medium">The Benchmark</div>
+                        </div>
+                        <h4 class="text-white font-bold text-lg mb-2">Task 1: The 2D Brainstorm</h4>
+                        <p class="text-sm text-gray-400 leading-relaxed">Users collaborated on a problem-solving task via screen-sharing. Observation noted frequent "camera-off" behavior, leading to passive listening and stunted, sequential interaction.</p>
+                    </div>
+
+                    <!-- Prototype B: FrameVR -->
+                    <div class="group">
+                        <div class="h-64 bg-gray-800 rounded-xl overflow-hidden border border-gray-700 relative mb-4">
+                            <img src="vr-framevr-ui.jpg" onerror="this.src='https://placehold.co/800x600/1F2937/A78BFA?text=Variable:+FrameVR+Environment'" class="w-full h-full object-cover" alt="FrameVR Interface">
+                            <div class="absolute top-3 left-3 bg-violet-900/90 text-white text-xs px-3 py-1.5 rounded-md border border-violet-500 font-medium shadow-glow-violet">The Spatial Variable</div>
+                        </div>
+                        <h4 class="text-white font-bold text-lg mb-2">Task 2: The 3D Collaboration</h4>
+                        <p class="text-sm text-gray-400 leading-relaxed">Avatars navigated a virtual room. Users interacted with a spatial whiteboard, physically positioning their avatars based on the speaker, fundamentally changing the social dynamic.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 4: FINDINGS (SPSS) -->
+            <section id="findings" class="scroll-section">
+                <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                    <span class="text-violet-500">04.</span> Quantitative Synthesis (SPSS)
+                </h2>
+                
+                <p class="mb-8 text-gray-300 text-lg">
+                    I extracted the raw data and utilized <strong>SPSS (Statistical Package for the Social Sciences)</strong> to run Paired-Samples T-Tests across the conditions. This removed subjective guesswork, yielding three critical findings:
+                </p>
+
+                <!-- Data Visualization: Mental Effort -->
+                <div class="glass-card p-8 rounded-2xl mb-8 border border-gray-700 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-6 opacity-5">
+                        <span class="material-symbols-rounded text-9xl text-white">analytics</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Cognitive Load (Mental Effort Scores)</h3>
+                    <p class="text-sm text-gray-400 mb-6 max-w-2xl">Raw data analysis (N=20) tracking the perceived mental exertion required to complete identical educational tasks across platforms.</p>
+                    
+                    <div class="space-y-6 max-w-3xl">
+                        <!-- Bar 1: Teams -->
+                        <div>
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="text-gray-300 font-medium">Prototype A (Teams) Mean Score</span>
+                                <span class="text-white font-bold">3.55 / 10</span>
+                            </div>
+                            <div class="w-full bg-gray-800 rounded-full h-4 overflow-hidden border border-gray-700">
+                                <div class="bg-gray-500 h-4 rounded-full data-bar" style="width: 35.5%"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Bar 2: FrameVR -->
+                        <div>
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="text-violet-300 font-medium">Prototype B (FrameVR) Mean Score</span>
+                                <span class="text-violet-400 font-bold">3.70 / 10</span>
+                            </div>
+                            <div class="w-full bg-gray-800 rounded-full h-4 overflow-hidden border border-gray-700">
+                                <div class="bg-violet-500 h-4 rounded-full data-bar shadow-glow-violet relative" style="width: 37%">
+                                    <div class="absolute inset-0 bg-white/20 w-full h-full animate-pulse"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-6 italic">*Data derived from post-task structured CSV logs. Higher score indicates greater mental exertion.</p>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <!-- Finding 1 -->
+                    <div class="bg-gray-800/50 border border-gray-700 p-8 rounded-2xl">
+                        <h3 class="text-3xl font-bold text-white mb-2">High Significance</h3>
+                        <p class="text-sm text-emerald-400 font-bold uppercase tracking-widest mb-4">Social Presence (NMSS)</p>
+                        <p class="text-sm text-gray-400 leading-relaxed">
+                            The T-Test proved a <strong>statistically significant increase</strong> in Social Presence for the VR environment. Specifically, the "Co-Presence" metric spiked because spatial audio and avatar movement successfully tricked the brain into feeling shared physical proximity, eliminating the isolation of 2D grids.
+                        </p>
+                    </div>
+
+                    <!-- Finding 2 -->
+                    <div class="bg-gray-800/50 border border-gray-700 p-8 rounded-2xl">
+                        <h3 class="text-3xl font-bold text-white mb-2">Null Hypothesis Retained</h3>
+                        <p class="text-sm text-gray-400 font-bold uppercase tracking-widest mb-4">Student Engagement (UES)</p>
+                        <p class="text-sm text-gray-400 leading-relaxed">
+                            Contrary to initial expectations, Engagement scores were <strong>statistically comparable</strong> between both platforms. As shown in the graph above, VR also incurred a slight (+4.2%) "Novelty Tax" in mental effort. VR improves human connection, but it does not automatically make the curriculum itself more engaging.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 5: ACTIONABLE UX INSIGHTS -->
+            <section id="takeaways" class="scroll-section">
+                <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                    <span class="text-violet-500">05.</span> Actionable UX Insights
+                </h2>
+                
+                <p class="mb-8 text-gray-300 text-lg">
+                    Data without application is just trivia. As a Product Designer, my goal was to translate these academic findings into concrete, actionable heuristics for designing spatial and collaborative software.
+                </p>
+
+                <!-- Qualitative Insight: The Whiteboard -->
+                <div class="glass-card p-8 rounded-2xl flex flex-col md:flex-row gap-8 items-center border-l-4 border-emerald-500 mb-8">
+                    <div class="w-full md:w-1/3 h-48 bg-gray-800 rounded-xl overflow-hidden border border-gray-700">
+                        <img src="vr-whiteboard.jpg" onerror="this.src='https://placehold.co/600x400/1F2937/A78BFA?text=Fig+1:+Spatial+Clustering'" class="w-full h-full object-cover" alt="Whiteboard Usage Observation">
+                    </div>
+                    <div class="w-full md:w-2/3">
+                        <h4 class="text-white font-bold text-xl mb-3">Insight 1: "The Huddle Effect" Outperforms UI Buttons</h4>
+                        <p class="text-sm text-gray-300 leading-relaxed mb-4">
+                            Qualitative observation revealed that in FrameVR, participants naturally "huddled" around the shared whiteboard. By utilizing proximity-based spatial audio, they managed turn-taking organically—simply by leaning their avatars in or stepping back.
+                        </p>
+                        <div class="bg-emerald-900/20 p-4 rounded-lg border border-emerald-500/30">
+                            <p class="text-sm text-emerald-300 font-medium">
+                                <span class="material-symbols-rounded text-sm align-middle mr-1">design_services</span>
+                                <strong>UX Strategy:</strong> Don't design a "Raise Hand" UI button if you can design spatial agency. Mimicking physical human affordances drastically reduces the friction of digital collaboration.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                    <div class="glass-card p-8 rounded-2xl border border-gray-700 flex flex-col h-full">
+                        <h4 class="text-white font-bold text-lg mb-3">Insight 2: The Cognitive Novelty Tax</h4>
+                        <p class="text-sm text-gray-400 mb-6 flex-grow">
+                            The slight increase in mental effort (3.70 vs 3.55) highlighted a learning curve for 3D navigation. Users initially spent precious cognitive energy learning *how* to move, rather than focusing solely on the educational content.
+                        </p>
+                        <p class="text-sm text-violet-300 font-medium bg-gray-800 p-4 rounded-lg border border-gray-700 mt-auto">
+                            <strong>UX Strategy:</strong> Intuitive onboarding is mandatory in XR. If the interaction model is too novel, it cannibalizes the user's cognitive bandwidth, leading to faster fatigue.
+                        </p>
+                    </div>
+
+                    <div class="glass-card p-8 rounded-2xl border border-gray-700 flex flex-col h-full">
+                        <h4 class="text-white font-bold text-lg mb-3">Insight 3: Immersion ≠ Engagement</h4>
+                        <p class="text-sm text-gray-400 mb-6 flex-grow">
+                            The UES scores definitively proved that placing a boring task inside a 3D room doesn't magically make it interesting. Spatial computing is a multiplier for presence, not a replacement for fundamental instructional design.
+                        </p>
+                        <p class="text-sm text-violet-300 font-medium bg-gray-800 p-4 rounded-lg border border-gray-700 mt-auto">
+                            <strong>UX Strategy:</strong> Technology should serve the content, not mask it. Product teams must nail the core value proposition and pedagogy first, and apply the medium second.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 6: CONCLUSION & LIMITATIONS -->
+            <section id="conclusion" class="scroll-section">
+                <div class="glass-card p-8 rounded-2xl mb-8 mt-12 border border-gray-700/50">
+                    <h3 class="text-xl font-bold text-white mb-4">Scientific Integrity & Research Limitations</h3>
+                    <p class="text-base text-gray-300 leading-relaxed mb-6">
+                        A rigorous researcher must acknowledge the boundaries of their data. Due to hardware accessibility constraints for the student demographic, testing was conducted using the desktop mode of FrameVR rather than full HMDs (Head-Mounted Displays). This inevitably dampened the potential ceiling for true "immersion" scores.
+                    </p>
+                    <div class="bg-violet-900/20 border-l-4 border-violet-500 p-6 rounded-r-lg">
+                        <p class="text-sm text-gray-300 italic leading-relaxed">
+                            "While G*Power validated our sample size (N=20) specifically for a within-subjects design, future studies aiming to generalize findings across broader educational demographics should scale to N > 34 to achieve higher statistical power when comparing multiple prototype variations."
+                        </p>
+                    </div>
+                </div>
+
+                <!-- More Work Section -->
+                <div class="max-w-4xl mx-auto mt-24 mb-8 px-4">
+                    <div class="flex items-center gap-4 mb-8">
+                        <div class="h-px bg-gray-700 flex-grow"></div>
+                        <span class="text-gray-500 text-sm font-bold uppercase tracking-widest">View More Product Design</span>
+                        <div class="h-px bg-gray-700 flex-grow"></div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Project 1: Flood -->
+                        <div class="glass-card p-6 rounded-xl hover:bg-gray-800 transition-colors group cursor-pointer" onclick="window.location.href='/project-flood'">
+                            <div class="flex justify-between items-start mb-4">
+                                <h3 class="text-lg font-bold text-white group-hover:text-blue-400 transition-colors">Immersive Flood Readiness</h3>
+                                <span class="text-xs bg-blue-900/30 text-blue-300 px-2 py-1 rounded border border-blue-500/20">Social Impact VR</span>
+                            </div>
+                            <p class="text-sm text-gray-400 mb-4">VR simulation designed to reduce risk-taking behaviors during floods.</p>
+                            <span class="text-xs text-violet-400 font-bold flex items-center">View Case Study <span class="material-symbols-rounded text-sm ml-1 transition-transform group-hover:translate-x-1">arrow_forward</span></span>
+                        </div>
+
+                        <!-- Project 2: CareerUp -->
+                        <div class="glass-card p-6 rounded-xl hover:bg-gray-800 transition-colors group cursor-pointer" onclick="window.location.href='/project-career'">
+                            <div class="flex justify-between items-start mb-4">
+                                <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition-colors">CareerUp App</h3>
+                                <span class="text-xs bg-emerald-900/30 text-emerald-300 px-2 py-1 rounded border border-emerald-500/20">Service Design</span>
+                            </div>
+                            <p class="text-sm text-gray-400 mb-4">Gamifying career discovery with job simulations and future-path mapping.</p>
+                            <span class="text-xs text-violet-400 font-bold flex items-center">View Case Study <span class="material-symbols-rounded text-sm ml-1 transition-transform group-hover:translate-x-1">arrow_forward</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center pb-12">
+                    <a href="index.html" class="inline-flex items-center text-gray-500 hover:text-white font-medium transition-colors text-sm uppercase tracking-widest mt-8">
+                        <span class="material-symbols-rounded mr-2 text-lg">home</span> Return to Home
+                    </a>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <footer class="text-center py-10 text-xs text-gray-600 uppercase tracking-widest border-t border-gray-800">
+        <p>&copy; 2026 Piyush Punjwani. Designed with Vibe Coding.</p>
+    </footer>
+
+    <script>
+        // SCROLL REVEAL & TOC LOGIC
+        document.addEventListener("DOMContentLoaded", () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            document.querySelectorAll('.fade-in-up, .glass-card').forEach(section => {
+                section.classList.add('fade-in-up');
+                observer.observe(section);
+            });
+
+            // Vision Toggle
+            const visionBtn = document.getElementById('vision-toggle');
+            const visionContent = document.getElementById('vision-content');
+            const visionIcon = document.getElementById('vision-icon');
+
+            if(visionBtn){
+                visionBtn.addEventListener('click', () => {
+                    visionContent.classList.toggle('open');
+                    visionIcon.style.transform = visionContent.classList.contains('open') ? 'rotate(180deg)' : 'rotate(0deg)';
+                });
+            }
+
+            // Data Bar Animation Trigger
+            const dataBars = document.querySelectorAll('.data-bar');
+            const barObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const targetWidth = entry.target.style.width;
+                        entry.target.style.width = '0';
+                        setTimeout(() => {
+                            entry.target.style.width = targetWidth;
+                        }, 100);
+                        barObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            dataBars.forEach(bar => {
+                barObserver.observe(bar);
+            });
+
+            // TOC Active State Logic
+            const sections = document.querySelectorAll('.scroll-section');
+            const navLinks = document.querySelectorAll('.toc-link');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (scrollY >= sectionTop - 200) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
